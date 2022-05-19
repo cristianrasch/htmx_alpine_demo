@@ -1,0 +1,5 @@
+<p>{{ msg }}</p>
+
+<p hx-ext="sse" sse-connect="{{ url_for('event_source') }}" sse-swap="NewsAlert" hx-target="#breaking-news">
+  <span id="breaking-news">Waiting for the latest news to break.. </span>
+</p>

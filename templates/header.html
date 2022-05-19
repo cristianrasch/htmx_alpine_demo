@@ -1,0 +1,36 @@
+<header>
+  <nav hx-boost="true" hx-target="main">
+    <ul>
+      <li>
+        <a href="{{ url_for('index') }}">Home</a>
+      </li>
+
+      <li>
+        <a href="{{ url_for('about') }}">About Us</a>
+      </li>
+
+      <li>
+        <a href="{{ url_for('contact') }}">Contact Us</a>
+      </li>
+
+      <li>
+        <a href="{{ url_for('clock') }}">The Clock</a>
+      </li>
+
+      <li>
+        <a href="{{ url_for('news') }}">News Live</a>
+      </li>
+
+      <li>
+        <a href="{{ url_for('slow') }}" hx-indicator=".my-indicator">
+          Slow Page
+        </a>
+        <img class="htmx-indicator my-indicator" src="{{ url_for('static', filename='img/spinner.svg') }}">
+      </li>
+
+      <li>
+        <a href="{{ url_for('client') }}">Client-side Templates</a>
+      </li>
+    </ul>
+  </nav>
+</header>

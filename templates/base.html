@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>htmx demo app{{ ' - ' if title else '' }}{{ title }}</title>
+
+    <link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet" />
+
+    <script src="https://unpkg.com/htmx.org@1.7.0"
+            integrity="sha384-EzBXYPt0/T6gxNp0nuPtLkmRpmDBbjg6WmCUZRLXBBwYYmwAUxzlSGej0ARHX0Bo"
+            crossorigin="anonymous" defer></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/sse.js" defer></script>
+    <script src="https://unpkg.com/mustache@latest" defer></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js" defer></script>
+  </head>
+
+  <body>
+    {% include 'header.html' without context %}
+
+    <main hx-boost="true" hx-target="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    {% include 'footer.html' with context %}
+  </body>
+</html>

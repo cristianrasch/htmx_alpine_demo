@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% include subtemplate_name|default('message.html') with context %}
+{% endblock %}

@@ -1,0 +1,25 @@
+<p>{{ msg }}</p>
+
+<form action="{{ url_for('contact') }}" method="POST">
+  <p>
+    <label for="name"></label>
+    <input name="name" value="John Doe" required />
+  </p>
+
+  <p>
+    <label for="email"></label>
+    <input type="email" name="email" value="johndoe@example.com" required />
+  </p>
+
+  <p>
+    <label for="subject"></label>
+    <input name="subject" value="I like spamming people" required />
+  </p>
+
+  <p>
+    <label for="message"></label>
+    <textarea name="message" cols="30" rows="10">Serves you well for not protecting your forms with a captcha</textarea>
+  </p>
+
+  <input type="submit" value="Send" />
+</form>

@@ -1,0 +1,18 @@
+<p>{{ msg }}</p>
+
+<div hx-ext="client-side-templates">
+  <button hx-get="{{ url_for('random_dog') }}"
+          hx-swap="innerHTML"
+          hx-target="#the-dog"
+          mustache-template="dog">
+    Click Me
+  </button>
+
+  <p id="the-dog">Soon to be replaced by..</p>
+
+  {% raw %}
+    <template id="dog">
+      <img src="{{message}}" alt="{{status}}" />
+    </template>
+  {% endraw %}
+</div>
