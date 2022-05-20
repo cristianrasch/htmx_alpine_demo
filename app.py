@@ -1,3 +1,5 @@
+import secrets
+import string
 from datetime import date, datetime
 from time import sleep
 
@@ -7,6 +9,10 @@ from flask import Flask, jsonify, render_template, request, session, url_for
 app = Flask(__name__)
 app.config["SERVER_NAME"] = "localhost:5000"
 app.config["SECRET_KEY"] = "change-me"
+
+
+ALPHABET = string.ascii_letters + string.digits + string.punctuation
+CAPTCHA_LEN = 8
 
 
 @app.get("/")
@@ -21,20 +27,35 @@ def about():
     return render_template(main_template(), msg=msg, title=title)
 
 
+@app.get("/gen_captcha")
+def captcha_gen():
+    captcha = "".join(secrets.choice(ALPHABET) for _ in range(CAPTCHA_LEN))
+    session["captcha"] = captcha
+    return jsonify({"captcha": captcha})
+
+
 @app.route("/contact_us", methods=["GET", "POST"])
 def contact():
-    title = "Contact Us"
-    if request.method == "GET":
-        title, msg = "Contact Us", "Please contact us.."
-        return render_template(
-            main_template(), subtemplate_name="contact.html", msg=msg, title=title
-        )
-    elif request.method == "POST":
-        name = request.form["name"]
-        msg = (
-            f"Thank you for your message '{name}'. We'll be in touch with you shortly.."
-        )
-        return render_template(main_template(), msg=msg, title=title)
+    title, msg = "Contact Us", "Please contact us.."
+    error = ""
+    if request.method == "POST":
+        user_captcha = request.form.get("captcha", "")
+        captcha_challenge = session.pop("captcha", "")
+
+        if user_captcha == captcha_challenge:
+            name = request.form["name"]
+            msg = f"Thank you for your message '{name}'. We'll be in touch with you shortly.."
+            return render_template(main_template(), msg=msg, title=title)
+        else:
+            error = "Invalid captcha!"
+
+    return render_template(
+        main_template(),
+        subtemplate_name="contact.html",
+        msg=msg,
+        error=error,
+        title=title,
+    )
 
 
 @app.get("/clock")

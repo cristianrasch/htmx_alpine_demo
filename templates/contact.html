@@ -1,25 +1,49 @@
-<p>{{ msg }}</p>
+{% block js %}
+  <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+{% endblock %}
+
+{% if error %}
+  <p>{{ error }}</p>
+{% endif %}
 
 <form action="{{ url_for('contact') }}" method="POST">
-  <p>
-    <label for="name"></label>
-    <input name="name" value="John Doe" required />
-  </p>
+  <fieldset x-data="{ captchaChallenge: '', userCaptcha: '' }"
+            x-init="{ data: { captcha: captchaChallenge } } = await axios.get(document.body.dataset.captchaGenPath)">
 
-  <p>
-    <label for="email"></label>
-    <input type="email" name="email" value="johndoe@example.com" required />
-  </p>
+    <legend>{{ msg }}</legend>
 
-  <p>
-    <label for="subject"></label>
-    <input name="subject" value="I like spamming people" required />
-  </p>
+    <p>
+      <label for="name">Name:</label><br />
+      <input name="name" id="name" value="John Doe" required />
+    </p>
 
-  <p>
-    <label for="message"></label>
-    <textarea name="message" cols="30" rows="10">Serves you well for not protecting your forms with a captcha</textarea>
-  </p>
+    <p>
+      <label for="email">Email:</label><br />
+      <input type="email" name="email" id="email" value="johndoe@example.com" required />
+    </p>
 
-  <input type="submit" value="Send" />
+    <p>
+      <label for="subject">Subject:</label><br />
+      <input name="subject" id="subject" value="I like spamming people" required />
+    </p>
+
+    <p>
+      <label for="message">Message:</label><br />
+      <textarea name="message" id="message" cols="30" rows="10">Please explain in excruciating detail what you are bothering us about this time</textarea>
+    </p>
+
+    <p>
+      <label for="captcha">
+        Captcha challenge. Please copy the following text below to verify you are a human being:
+        <code id="captcha_challenge" x-text="captchaChallenge"></code>
+      </label>
+      <br />
+      <input name="captcha" id="captcha" x-model="userCaptcha"
+             @input="userCaptcha = $event.target.value.trim()"
+             x-bind:style="{ ['background-color']: userCaptcha !== captchaChallenge ?  'red' : 'revert' }"
+             required />
+    </p>
+
+    <button type="submit" x-bind:disabled="userCaptcha !== captchaChallenge">Send</button>
+  </fieldset>
 </form>
