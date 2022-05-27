@@ -6,7 +6,7 @@
   <p>{{ error }}</p>
 {% endif %}
 
-<form action="{{ url_for('contact') }}" method="POST">
+<form action="{{ url_for('contact') }}" method="POST" hx-encoding="multipart/form-data">
   <fieldset x-data="{ captchaChallenge: '', userCaptcha: '' }"
             x-init="{ data: { captcha: captchaChallenge } } = await axios.get(document.body.dataset.captchaGenPath)">
 
@@ -30,6 +30,22 @@
     <p>
       <label for="message">Message:</label><br />
       <textarea name="message" id="message" cols="30" rows="10">Please explain in excruciating detail what you are bothering us about this time</textarea>
+    </p>
+
+    <p x-data="autocomplete('{{ url_for('cities') }}')">
+      <label for="city">Where are you writing to us from?</label><br />
+
+      <input name="city" id="city" list="cities" x-bind="trigger" required />
+      <datalist id="cities">
+        <template x-for="city in cities" :key="city">
+          <option :value="city" />
+        </template>
+      </datalist>
+    </p>
+
+    <p>
+      <label for="pic">Send us a cute pic:</label><br />
+      <input type="file" name="pic" id="pic" accept="image/*" required />
     </p>
 
     <p>

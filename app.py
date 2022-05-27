@@ -1,5 +1,7 @@
+import re
 import secrets
 import string
+import sys
 from datetime import date, datetime
 from time import sleep
 
@@ -9,6 +11,13 @@ from flask import Flask, jsonify, render_template, request, session, url_for
 app = Flask(__name__)
 app.config["SERVER_NAME"] = "localhost:5000"
 app.config["SECRET_KEY"] = "change-me"
+app.config["CITIES"] = [
+    "Buenos Aires",
+    "Colonia del Sacramento",
+    "Edinburgh",
+    "Glasgow",
+    "San Diego",
+]
 
 
 ALPHABET = string.ascii_letters + string.digits + string.punctuation
@@ -34,6 +43,16 @@ def captcha_gen():
     return jsonify({"captcha": captcha})
 
 
+@app.get("/cities")
+def cities():
+    cities = app.config["CITIES"]
+    if q := request.args.get("q"):
+        regex = re.compile(q, re.I)
+        cities = [city for city in cities if regex.search(city)]
+
+    return jsonify({"cities": cities})
+
+
 @app.route("/contact_us", methods=["GET", "POST"])
 def contact():
     title, msg = "Contact Us", "Please contact us.."
@@ -44,7 +63,12 @@ def contact():
 
         if user_captcha == captcha_challenge:
             name = request.form["name"]
-            msg = f"Thank you for your message '{name}'. We'll be in touch with you shortly.."
+            city = request.form["city"]
+            pic = request.files["pic"]
+            msg = (
+                f"'{name}' from '{city}':  thank you for your lovely pic ({pic.filename})."
+                " We'll be in touch with you shortly.."
+            )
             return render_template(_main_template(), msg=msg, title=title)
         else:
             error = "Invalid captcha!"
@@ -91,8 +115,6 @@ def news():
 @app.get("/event_source")
 def event_source():
     def gen():
-        import sys
-
         max_ = 3
         for i in range(max_):
             print("---", file=sys.stderr)
