@@ -18,13 +18,13 @@ CAPTCHA_LEN = 8
 @app.get("/")
 def index():
     title, msg = "Home", "Welcome to our site.."
-    return render_template(main_template(), msg=msg, title=title)
+    return render_template(_main_template(), msg=msg, title=title)
 
 
 @app.get("/about_us")
 def about():
     title, msg = "About Us", "All about us.."
-    return render_template(main_template(), msg=msg, title=title)
+    return render_template(_main_template(), msg=msg, title=title)
 
 
 @app.get("/gen_captcha")
@@ -45,12 +45,12 @@ def contact():
         if user_captcha == captcha_challenge:
             name = request.form["name"]
             msg = f"Thank you for your message '{name}'. We'll be in touch with you shortly.."
-            return render_template(main_template(), msg=msg, title=title)
+            return render_template(_main_template(), msg=msg, title=title)
         else:
             error = "Invalid captcha!"
 
     return render_template(
-        main_template(),
+        _main_template(),
         subtemplate_name="contact.html",
         msg=msg,
         error=error,
@@ -76,7 +76,7 @@ def clock():
         session["polls"] = "0"
         title, msg = "Clock", "Watch the time go by.."
         return render_template(
-            main_template(), subtemplate_name="clock.html", msg=msg, title=title
+            _main_template(), subtemplate_name="clock.html", msg=msg, title=title
         )
 
 
@@ -84,7 +84,7 @@ def clock():
 def news():
     title, msg = "Breaking News", "Breaking news powered by SSE.."
     return render_template(
-        main_template(), subtemplate_name="news.html", msg=msg, title=title
+        _main_template(), subtemplate_name="news.html", msg=msg, title=title
     )
 
 
@@ -113,7 +113,7 @@ def event_source():
 def slow():
     title, msg = "Slow Page", "Well.. that took a while..."
     sleep(3)
-    return render_template(main_template(), msg=msg, title=title)
+    return render_template(_main_template(), msg=msg, title=title)
 
 
 @app.get("/random_dog")
@@ -129,18 +129,18 @@ def client():
         "A quick taste of client-side templates..",
     )
     return render_template(
-        main_template(), subtemplate_name="client.html", msg=msg, title=title
+        _main_template(), subtemplate_name="client.html", msg=msg, title=title
     )
 
 
-def is_hx_req():
+def _is_hx_req():
     return request.headers.get("HX-Request", "false") == "true"
 
 
-def main_template():
-    return "partial.html" if is_hx_req() else "index.html"
+def _main_template():
+    return "partial.html" if _is_hx_req() else "index.html"
 
 
 @app.context_processor
-def inject_global_template_vars():
+def _inject_global_template_vars():
     return {"current_year": date.today().year}
