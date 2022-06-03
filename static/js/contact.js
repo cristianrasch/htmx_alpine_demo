@@ -1,9 +1,9 @@
-document.addEventListener('alpine:init', function () {
+document.addEventListener('alpine:init', () => {
   Alpine.data('autocomplete', (path = '') => ({
     cities: [],
     citiesPath: path,
 
-    async init(citiesPath) {
+    async init() {
       const resp = await axios.get(this.citiesPath);
       this.replaceCities(resp);
     },

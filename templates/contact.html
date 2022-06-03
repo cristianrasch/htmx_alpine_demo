@@ -1,5 +1,5 @@
 {% block js %}
-  <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/contact.js') }}" defer></script>
 {% endblock %}
 
 {% if error %}
@@ -35,7 +35,7 @@
     <p x-data="autocomplete('{{ url_for('cities') }}')">
       <label for="city">Where are you writing to us from?</label><br />
 
-      <input name="city" id="city" list="cities" x-bind="trigger" required />
+      <input name="city" id="city" autocomplete="off" list="cities" x-bind="trigger" required />
       <datalist id="cities">
         <template x-for="city in cities" :key="city">
           <option :value="city" />
@@ -54,7 +54,7 @@
         <code id="captcha_challenge" x-text="captchaChallenge"></code>
       </label>
       <br />
-      <input name="captcha" id="captcha" x-model="userCaptcha"
+      <input name="captcha" id="captcha" autocomplete="off" x-model="userCaptcha"
              @input="userCaptcha = $event.target.value.trim()"
              x-bind:style="{ ['background-color']: userCaptcha !== captchaChallenge ?  'red' : 'revert' }"
              required />
