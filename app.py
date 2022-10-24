@@ -1,3 +1,4 @@
+import json
 import re
 import secrets
 import string
@@ -6,6 +7,7 @@ from time import sleep
 
 import requests
 from flask import Flask, jsonify, render_template, request, session, url_for
+from flask_sock import Sock
 
 app = Flask(__name__)
 app.config["SERVER_NAME"] = "localhost:5000"
@@ -17,6 +19,7 @@ app.config["CITIES"] = [
     "Glasgow",
     "San Diego",
 ]
+sock = Sock(app)
 
 
 ALPHABET = string.ascii_letters + string.digits + string.punctuation
@@ -86,7 +89,7 @@ def clock():
     if request.headers.get("Referer", "") == url_for("clock", _external=True):
         polls = int(session["polls"])
         if polls < 3:
-            now = datetime.now().isoformat()
+            now = datetime.now().replace(microsecond=0).isoformat()
             msg = f"Current time is: {now}"
             status = 200
         else:
@@ -103,11 +106,11 @@ def clock():
         )
 
 
-@app.get("/news_live")
-def news():
+@app.get("/sse_news")
+def sse_news():
     title, msg = "Breaking News", "Breaking news powered by SSE.."
     return render_template(
-        _main_template(), subtemplate_name="news.html", msg=msg, title=title
+        _main_template(), subtemplate_name="sse.html", msg=msg, title=title
     )
 
 
@@ -149,6 +152,36 @@ def client():
     return render_template(
         _main_template(), subtemplate_name="client.html", msg=msg, title=title
     )
+
+
+@app.get("/ws_news")
+def ws_news():
+    title, msg = "Websockets", "WS test"
+    return render_template(
+        _main_template(), subtemplate_name="ws.html", msg=msg, title=title
+    )
+
+
+@sock.route("/echo_ws")
+def echo_ws(ws):
+    # import sys
+    # from pprint import pprint
+
+    while True:
+        if data := ws.receive(timeout=0.25):
+            # print("---", file=sys.stderr)
+            # print("DATA:", file=sys.stderr)
+            # pprint(data, stream=sys.stderr)
+            # print("---", file=sys.stderr)
+            if json.loads(data).get("cmd") == "stop":
+                break
+        else:
+            now = datetime.now().replace(microsecond=0).isoformat()
+            ws.send(f'<li id="current-time">Even more breaking news at: {now}</li>')
+            sleep(2)
+
+    ws.close()
+    # ws.close(1_000, "User-requested shutdown.")
 
 
 def _is_hx_req():

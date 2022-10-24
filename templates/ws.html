@@ -1,0 +1,13 @@
+<p>{{ msg }}</p>
+
+<!--div hx-ext="ws" ws-connect="{{ url_for('echo_ws') }}" hx-boost="false"-->
+<div hx-ws="connect:{{ url_for('echo_ws') }}" hx-boost="false">
+  <ul>
+    <li id="current-time">Wait for it..</li>
+  </ul>
+
+  <!--form ws-send-->
+  <form hx-ws="send">
+    <button name="cmd" value="stop">Stop</button>
+  </form>
+</div>
