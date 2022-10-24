@@ -1,7 +1,6 @@
 import re
 import secrets
 import string
-import sys
 from datetime import date, datetime
 from time import sleep
 
@@ -117,10 +116,7 @@ def event_source():
     def gen():
         max_ = 3
         for i in range(max_):
-            print("---", file=sys.stderr)
             now = datetime.now().isoformat()
-            print(f"{i=} ({now=})", file=sys.stderr)
-            print("---", file=sys.stderr)
             resp = "event: NewsAlert\n"
             resp += f"data: <span id='breaking-news'>Breaking news at: {now}</span>\n\n"
             yield resp

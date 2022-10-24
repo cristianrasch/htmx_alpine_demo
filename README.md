@@ -16,5 +16,5 @@ poetry install
 2. Run demo with:
 
 ```bash
-FLASK_ENV=development FLASK_APP=app poetry run flask run --with-threads
+FLASK_DEBUG=1 FLASK_APP=app poetry run flask run --with-threads
 ```
