@@ -119,7 +119,7 @@ def event_source():
     def gen():
         max_ = 3
         for i in range(max_):
-            now = datetime.now().isoformat()
+            now = datetime.now().replace(microsecond=0).isoformat()
             resp = "event: NewsAlert\n"
             resp += f"data: <span id='breaking-news'>Breaking news at: {now}</span>\n\n"
             yield resp
