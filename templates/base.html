@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>htmx demo app{{ ' - ' if title else '' }}{{ title }}</title>
+    <title>htmx + apline demo app{{ ' - ' if title else '' }}{{ title }}</title>
 
     <link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet" />
 
@@ -14,7 +14,7 @@
     <script src="{{ url_for('static', filename='js/vendor/axios.min.js') }}" defer></script>
   </head>
 
-  <body data-captcha-gen-path="{{ url_for('captcha_gen') }}">
+  <body>
     {% include 'header.html' without context %}
 
     <main hx-boost="true" hx-target="main">

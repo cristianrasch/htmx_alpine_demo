@@ -1,4 +1,15 @@
 document.addEventListener('alpine:init', () => {
+  Alpine.data('captcha', (path = '') => ({
+    captchaChallenge: '',
+    userCaptcha: '',
+    captchaGenPath: path,
+
+    async init() {
+      const resp = await axios.get(this.captchaGenPath);
+      this.$data.captchaChallenge = resp.data.captcha;
+    },
+  }));
+
   Alpine.data('autocomplete', (path = '') => ({
     cities: [],
     citiesPath: path,

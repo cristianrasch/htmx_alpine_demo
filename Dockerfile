@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.3
-FROM python:3.10-bullseye AS builder
+FROM python:3.11-bullseye AS builder
 
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 
@@ -10,7 +10,7 @@ ENV PATH=/root/.local/bin:$PATH
 RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install --no-cache-dir --user -r $REQUIREMENTS_FILE
 
-FROM python:3.10-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -40,6 +40,6 @@ ENV PATH=$USR_HOME/.local/bin:$PATH
 
 # COPY --chown=$USER_ID:$GROUP_ID . .
 
-EXPOSE 5000
+# EXPOSE 5000
 
-CMD ["flask", "run", "-h", "0.0.0.0", "-p", "5000", "--with-threads"]
+# CMD ["flask", "run", "-h", "0.0.0.0", "-p", "5000", "--with-threads"]
